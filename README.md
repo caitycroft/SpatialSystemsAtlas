@@ -1,37 +1,85 @@
-# React + r3f
+# 🌐 Spatial Systems Atlas
 
-A basic example of using Spark in a React app. This example uses React Three Fiber to create a basic scene with a camera with [`CameraControls`](https://drei.docs.pmnd.rs/controls/camera-controls), a [`SparkRenderer`](./src/components/spark/SparkRenderer.tsx), and a [`SplatMesh`](./src/components/spark/SplatMesh.tsx).
+**Transform complex systems into networks of explorable 3D worlds.**
 
-In order to use Spark elements declaratively with JSX, we use React Three Fiber's [`extend`](https://r3f.docs.pmnd.rs/api/typescript#extend-usage) function. See [`src/components/spark/SplatMesh.tsx`](./src/components/spark/SplatMesh.tsx) and [`src/components/spark/SparkRenderer.tsx`](./src/components/spark/SparkRenderer.tsx) as examples.
+Spatial Systems Atlas is a spatial intelligence tool that converts system data — real estate portfolios, urban infrastructure, fictional universes — into interconnected Gaussian splat environments you can walk through in your browser.
 
-## Running the example
+Built with [SparkJS](https://sparkjs.dev) + [World Labs Marble API](https://worldlabs.ai) + React Three Fiber.
 
-First, download the assets:
+---
+
+## ✨ What It Does
+
+Every node in a system becomes a navigable 3D world. Relationships between nodes are visualized as animated particle connections. Click a node in the graph → fly into a photorealistic AI-generated environment.
+
+### Demo Domains
+
+| Domain | Description |
+|--------|-------------|
+| **Everon Storyworlds** | A transmedia universe with 4 levels — each song serves as the soundtrack to adventures in a different world |
+| **CRE Portfolio** | Commercial real estate properties rendered as walkable 3D environments for investors |
+| **Urban Futures** | City infrastructure and urban planning scenarios for CityScience Lab SF |
+
+## 🛠 Tech Stack
+
+- **React** + TypeScript + Vite
+- **SparkJS** — Advanced Gaussian Splat renderer for Three.js
+- **React Three Fiber** — Declarative 3D scene management
+- **World Labs Marble API** — AI-powered image-to-world generation
+- **drei** — R3F helpers (CameraControls, etc.)
+
+## 🚀 Getting Started
 
 ```bash
-npm run assets:download
-```
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/SpatialSystemsAtlas.git
+cd SpatialSystemsAtlas
 
-Then, run the development server:
-
-```bash
+# Install dependencies
 npm install
+
+# Download sample splat assets
+npm run assets:download
+
+# Start development server
 npm run dev
 ```
 
-## Using Webpack
+Open [http://localhost:5173](http://localhost:5173) to see the app.
 
-> [!IMPORTANT]
-> This example uses Vite as the bundler. There is an issue with Spark and Webpack where the WASM URL is not properly resolved. If you are using Webpack, you can apply the following configuration to your `webpack.config.js` file:
->
-> ```js
-> module.exports = {
->   module: {
->     parser: {
->       javascript: {
->         url: false, // disable parsing of `new URL()` syntax
->       },
->     },
->   },
-> };
-> ```
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── spark/          # SparkJS renderer + splat mesh components
+│   ├── atlas/          # Node graph UI + world viewer
+│   └── ui/             # Shared UI components
+├── systems/            # System data (Everon, CRE, Urban)
+├── hooks/              # Custom hooks (Marble API, world loading)
+└── App.tsx             # Main application
+```
+
+## 🔑 Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+VITE_MARBLE_API_KEY=your_world_labs_api_key
+```
+
+## 🎨 Design
+
+Void black aesthetic with bioluminescent cyan accents. Nodes rendered as glowing orbs with animated particle edges. Smooth camera transitions between graph overview and immersive world exploration.
+
+## 📖 Background
+
+Originally prototyped at **World Labs Hack [01]** (February 28, 2026). The concept: an "Obsidian for 3D worlds" — a spatial knowledge graph where every node becomes a navigable, AI-generated environment.
+
+## 👤 Author
+
+**Caity Croft** — Creative Technologist & Spatial Intelligence Researcher
+
+## 📄 License
+
+MIT
