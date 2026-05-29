@@ -1,1 +1,193 @@
 @import "tailwindcss";
+
+/*
+  Caity Croft · Spatial Systems Atlas
+  Visual language: pearlescent light, iridescent holographic glass,
+  thin engraved serif, sparkle + infinity motifs. "Navigate the Infinite."
+*/
+
+:root {
+  /* Light pearlescent base */
+  --pearl-0: #fafbff; /* near-white, faint cool */
+  --pearl-1: #eef0f7; /* primary background */
+  --pearl-2: #e3e6f0; /* panel base */
+  --mist: #d7dbe8;
+
+  /* Ink */
+  --ink: #2b2d3a; /* primary text — soft near-black */
+  --ink-soft: #5b5f72; /* secondary text */
+  --ink-faint: #9398aa; /* tertiary / labels */
+  --hairline: rgba(43, 45, 58, 0.12);
+
+  /* Iridescent / holographic accents */
+  --iri-cyan: #9fd8e8;
+  --iri-lilac: #c9b6e6;
+  --iri-pink: #f0c4d6;
+  --iri-peach: #f5d9c4;
+  --iri-mint: #bfe6d2;
+  --iri-blue: #b3c4ee;
+
+  /* Prismatic gradient used across glass, text, glows */
+  --holo: linear-gradient(
+    100deg,
+    #b9c6f0 0%,
+    #c9b6e6 24%,
+    #f0c4d6 46%,
+    #f5dcc4 64%,
+    #bfe6d2 82%,
+    #a8d6ea 100%
+  );
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.75);
+
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --display: "Cinzel", "Cormorant Garamond", serif;
+  --ui: "Jost", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  color: var(--ink);
+  font-family: var(--ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+body {
+  /* Soft prismatic field behind everything */
+  background:
+    radial-gradient(120% 90% at 18% 12%, rgba(201, 182, 230, 0.45), transparent 55%),
+    radial-gradient(110% 80% at 85% 22%, rgba(240, 196, 214, 0.4), transparent 52%),
+    radial-gradient(120% 100% at 70% 95%, rgba(159, 216, 232, 0.42), transparent 55%),
+    radial-gradient(100% 80% at 25% 88%, rgba(191, 230, 210, 0.38), transparent 55%),
+    linear-gradient(180deg, var(--pearl-0), var(--pearl-1) 60%, var(--pearl-2));
+}
+
+/* ---- Type helpers ---- */
+.cc-wordmark {
+  font-family: var(--display);
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+.cc-serif {
+  font-family: var(--serif);
+}
+.cc-label {
+  font-family: var(--ui);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+/* Holographic text fill */
+.cc-holo-text {
+  background: var(--holo);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: holo-drift 14s ease-in-out infinite;
+}
+
+/* Frosted glass surface */
+.cc-glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(22px) saturate(135%);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  box-shadow:
+    0 12px 40px rgba(110, 120, 160, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Iridescent hairline border accent */
+.cc-iri-border {
+  position: relative;
+}
+.cc-iri-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--holo);
+  background-size: 200% 200%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.7;
+  animation: holo-drift 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ---- Animations ---- */
+@keyframes holo-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cc-fade-in {
+  animation: fade-in 0.5s ease both;
+}
+
+/* ---- Scrollbars (light) ---- */
+.atlas-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.atlas-scroll::-webkit-scrollbar-thumb {
+  background: rgba(150, 160, 200, 0.35);
+  border-radius: 4px;
+}
+.atlas-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* drei <Html> labels shouldn't capture the cursor unless asked */
+.cc-node-label {
+  pointer-events: none;
+  user-select: none;
+}

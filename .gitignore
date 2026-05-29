@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 public/assets/
+
+# Personal context (symlinked / machine-local)
+MASTER-CONTEXT.md
+AGENTS.md

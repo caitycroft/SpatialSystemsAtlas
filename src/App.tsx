@@ -1,7 +1,7 @@
-import Atlas from "./components/Atlas";
+import AtlasApp from "./components/atlas/AtlasApp";
 
 function App() {
-  return <Atlas />;
+  return <AtlasApp />;
 }
 
 export default App;
