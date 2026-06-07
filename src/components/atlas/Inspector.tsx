@@ -2,7 +2,7 @@ import React from "react";
 import {
   type AtlasNode,
   type SystemMap,
-  NODE_TYPE_META,
+  resolveTypeMeta,
 } from "../../types/atlas";
 
 interface Props {
@@ -33,7 +33,7 @@ export const Inspector: React.FC<Props> = ({
   onClose,
 }) => {
   if (!node) return null;
-  const meta = NODE_TYPE_META[node.type];
+  const meta = resolveTypeMeta(map, node.type);
 
   const connections = map.edges
     .filter((e) => e.from === node.id || e.to === node.id)

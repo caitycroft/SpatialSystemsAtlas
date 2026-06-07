@@ -4,13 +4,63 @@ import {
   type NodeType,
   type SystemMap,
   NODE_TYPE_META,
+  resolveTypeMeta,
 } from "../../types/atlas";
-import { missionCorridor } from "../../data/missionCorridor";
+import { SYSTEMS, getSystem } from "../../data/systems";
 import { AtlasScene } from "./AtlasScene";
 import { Inspector } from "./Inspector";
 import { WorldViewer } from "./WorldViewer";
 
-const Header: React.FC<{ map: SystemMap }> = ({ map }) => (
+const SystemSwitcher: React.FC<{
+  activeId: string;
+  onSwitch: (id: string) => void;
+}> = ({ activeId, onSwitch }) => (
+  <div
+    style={{
+      display: "flex",
+      gap: 4,
+      marginTop: 8,
+      padding: 3,
+      borderRadius: 999,
+      background: "rgba(255,255,255,0.45)",
+      border: "1px solid rgba(255,255,255,0.7)",
+    }}
+  >
+    {SYSTEMS.map((s) => {
+      const active = s.id === activeId;
+      return (
+        <button
+          key={s.id}
+          onClick={() => onSwitch(s.id)}
+          className={active ? "cc-iri-border" : undefined}
+          style={{
+            border: "none",
+            borderRadius: 999,
+            padding: "5px 14px",
+            cursor: "pointer",
+            fontFamily: "var(--ui)",
+            fontSize: 10,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: active ? "#2b2d3a" : "#8a8fa3",
+            background: active ? "rgba(255,255,255,0.92)" : "transparent",
+            boxShadow: active ? "0 2px 10px rgba(120,130,170,0.18)" : "none",
+            transition: "color 0.2s",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {s.shortLabel}
+        </button>
+      );
+    })}
+  </div>
+);
+
+const Header: React.FC<{
+  map: SystemMap;
+  activeId: string;
+  onSwitch: (id: string) => void;
+}> = ({ map, activeId, onSwitch }) => (
   <div
     className="cc-glass cc-fade-in"
     style={{
@@ -18,14 +68,14 @@ const Header: React.FC<{ map: SystemMap }> = ({ map }) => (
       top: 16,
       left: "50%",
       transform: "translateX(-50%)",
-      borderRadius: 16,
-      padding: "10px 26px",
+      borderRadius: 18,
+      padding: "12px 26px 14px",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       gap: 2,
       zIndex: 10,
-      maxWidth: "min(92vw, 720px)",
+      maxWidth: "min(94vw, 760px)",
       textAlign: "center",
     }}
   >
@@ -36,19 +86,19 @@ const Header: React.FC<{ map: SystemMap }> = ({ map }) => (
       </span>
       <span className="cc-holo-text" style={{ fontSize: 12 }}>✦</span>
     </div>
-    <div
-      className="cc-label"
-      style={{ fontSize: 8.5, color: "#9398aa", marginTop: 1 }}
-    >
+    <div className="cc-label" style={{ fontSize: 8.5, color: "#9398aa", marginTop: 1 }}>
       Navigate the Infinite
     </div>
+
+    <SystemSwitcher activeId={activeId} onSwitch={onSwitch} />
+
     <div
       className="cc-serif"
       style={{
         fontSize: 16,
         fontStyle: "italic",
         color: "#4a4d5e",
-        marginTop: 4,
+        marginTop: 8,
         lineHeight: 1.2,
       }}
       title={map.question}
@@ -86,7 +136,7 @@ const StrataPanel: React.FC<{
         Strata
       </div>
       {(Object.keys(NODE_TYPE_META) as NodeType[]).map((t) => {
-        const meta = NODE_TYPE_META[t];
+        const meta = resolveTypeMeta(map, t);
         const count = counts[t] ?? 0;
         if (count === 0) return null;
         const hidden = hiddenTypes.has(t);
@@ -152,7 +202,9 @@ const Hint: React.FC = () => (
 );
 
 export const AtlasApp: React.FC = () => {
-  const map = missionCorridor;
+  const [systemId, setSystemId] = useState<string>(SYSTEMS[0].id);
+  const map = useMemo(() => getSystem(systemId), [systemId]);
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hiddenTypes, setHiddenTypes] = useState<Set<NodeType>>(new Set());
   const [worldNode, setWorldNode] = useState<AtlasNode | null>(null);
@@ -161,6 +213,14 @@ export const AtlasApp: React.FC = () => {
     () => map.nodes.find((n) => n.id === selectedId) ?? null,
     [map.nodes, selectedId],
   );
+
+  const switchSystem = (id: string) => {
+    if (id === systemId) return;
+    setSystemId(id);
+    setSelectedId(null);
+    setWorldNode(null);
+    setHiddenTypes(new Set());
+  };
 
   const toggleType = (t: NodeType) =>
     setHiddenTypes((prev) => {
@@ -175,7 +235,9 @@ export const AtlasApp: React.FC = () => {
           3D labels never bleed over the world viewer (and the GPU rests). */}
       {!worldNode && (
         <>
+          {/* key by system id → clean remount (fresh layout + camera framing) */}
           <AtlasScene
+            key={map.id}
             map={map}
             selectedId={selectedId}
             hiddenTypes={hiddenTypes}
@@ -183,7 +245,7 @@ export const AtlasApp: React.FC = () => {
             onEnterWorld={setWorldNode}
           />
 
-          <Header map={map} />
+          <Header map={map} activeId={systemId} onSwitch={switchSystem} />
           <StrataPanel map={map} hiddenTypes={hiddenTypes} onToggleType={toggleType} />
           <Hint />
 

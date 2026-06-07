@@ -12,6 +12,7 @@ import type { SystemMap } from "../types/atlas";
 export const missionCorridor: SystemMap = {
   id: "mission-corridor",
   name: "Mission Corridor — Mid-Rise Housing",
+  shortLabel: "Urban Futures",
   question:
     "How does adding mid-rise housing along the Mission St corridor (16th–24th) affect transit load, retail mix, and displacement risk?",
   description:

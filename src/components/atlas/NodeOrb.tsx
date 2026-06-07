@@ -2,10 +2,11 @@ import React, { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Float, Html } from "@react-three/drei";
 import * as THREE from "three";
-import { type AtlasNode, NODE_TYPE_META } from "../../types/atlas";
+import { type AtlasNode, type SystemMap, resolveTypeMeta } from "../../types/atlas";
 
 interface Props {
   node: AtlasNode;
+  map: SystemMap;
   position: THREE.Vector3;
   selected: boolean;
   dimmed: boolean;
@@ -18,13 +19,14 @@ const radiusFor = (type: AtlasNode["type"]): number =>
 
 export const NodeOrb: React.FC<Props> = ({
   node,
+  map,
   position,
   selected,
   dimmed,
   onSelect,
   onEnterWorld,
 }) => {
-  const meta = NODE_TYPE_META[node.type];
+  const meta = resolveTypeMeta(map, node.type);
   const tint = new THREE.Color(meta.iri);
   const r = radiusFor(node.type);
 

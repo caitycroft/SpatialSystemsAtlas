@@ -150,6 +150,7 @@ const SceneContents: React.FC<Props & { layout: Map<string, THREE.Vector3> }> = 
           <NodeOrb
             key={node.id}
             node={node}
+            map={map}
             position={pos}
             selected={node.id === selectedId}
             dimmed={!!neighborIds && !neighborIds.has(node.id)}

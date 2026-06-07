@@ -59,11 +59,20 @@ export interface AtlasEdge {
   label?: string;
 }
 
+// A per-system relabeling of the generic node types, so the same engine can
+// speak "Stakeholder / Policy / Metric" for a civic map and "Character /
+// Force / Theme" for a storyworld. Colors stay global; only label/glyph change.
+export type Lexicon = Partial<
+  Record<NodeType, Partial<{ label: string; glyph: string }>>
+>;
+
 export interface SystemMap {
   id: string;
   name: string;
+  shortLabel: string; // compact name for the system switcher
   question: string; // the single question this map exists to answer
   description: string;
+  lexicon?: Lexicon; // optional per-system relabeling of node types
   nodes: AtlasNode[];
   edges: AtlasEdge[];
 }
@@ -82,6 +91,24 @@ export const NODE_TYPE_META: Record<
   metric: { label: "Metric", color: "#9b5cff", iri: "#c9b6e6", glyph: "▲" },
   dataSource: { label: "Data source", color: "#4a5568", iri: "#d3d8e6", glyph: "≡" },
   world: { label: "3D world", color: "#2ee6a6", iri: "#bfe6d2", glyph: "◉" },
+};
+
+// Resolve the visual + textual meta for a node type within a given system,
+// applying the system's lexicon overrides on top of the global defaults.
+export interface ResolvedTypeMeta {
+  label: string;
+  color: string;
+  iri: string;
+  glyph: string;
+}
+
+export const resolveTypeMeta = (
+  map: Pick<SystemMap, "lexicon">,
+  type: NodeType,
+): ResolvedTypeMeta => {
+  const base = NODE_TYPE_META[type];
+  const o = map.lexicon?.[type];
+  return { ...base, ...(o ?? {}) };
 };
 
 export const EDGE_TYPE_META: Record<
